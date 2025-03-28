@@ -8,12 +8,17 @@ import (
 
 func main() {
 
-	file := file.NewFile("prices.txt")
-
+	file := file.NewFile("prices.json")
 	fileData, _ := file.GetPriceFromFile()
 
-	prices := price.NewPrice(0.1, []float64{123, 123, 123})
-	result := prices.CalculatorTaxRates()
-	fmt.Println(result)
+	taxList := price.NewTaxList([]float64{0.1, 0.2, 0.3})
+
 	fmt.Println(fileData)
+
+	prices := price.NewPrice(0.1, fileData)
+	result := taxList.CalculatorTax(prices.Prices)
+
+	file.WritePriceToFile(result, "outputData.txt")
+
+	fmt.Println(result)
 }

@@ -12,7 +12,7 @@ func NewPrice(taxRate float64, prices []float64) *TaxIncludedPriceJob {
 	}
 }
 
-func (t *TaxIncludedPriceJob) CalculatorTaxRates() []float64 {
+func (t *TaxIncludedPriceJob) CalculatorTaxRate() []float64 {
 	result := make([]float64, len(t.Prices))
 	for index, price := range t.Prices {
 		result[index] = price * t.TaxRate

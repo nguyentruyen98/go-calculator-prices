@@ -1,31 +1,43 @@
 package file
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
 )
 
 type File struct {
 	FileName string
 }
 
+type PriceData struct {
+	Prices []float64 `json:"prices"`
+}
+
 func NewFile(fileName string) *File {
 	return &File{FileName: fileName}
 }
 
-func (f *File) GetPriceFromFile() (float64, error) {
+func (f *File) GetPriceFromFile() ([]float64, error) {
 	data, err := os.ReadFile(f.FileName)
 	if err != nil {
-		return 0, err
+		return []float64{}, err
 	}
-	dataText := string(data)
-	fmt.Println(dataText)
+	var objData PriceData
 
-	price, err := strconv.ParseFloat(dataText, 64)
+	err = json.Unmarshal([]byte(data), &objData)
+
 	if err != nil {
-		return 0, err
+		return []float64{}, err
 	}
 
-	return price, nil
+	return objData.Prices, nil
+}
+
+func (f *File) WritePriceToFile(prices interface{}, fileName string) {
+	pricesText := fmt.Sprintf("%f", prices)
+	err := os.WriteFile(fileName, []byte(pricesText), 0644)
+	if err != nil {
+		fmt.Println("Error", err)
+	}
 }
